@@ -1,7 +1,11 @@
+const dotenv = require('dotenv');
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
-const DB = 'mongodb+srv://shan:hamdani@cluster0.w7dd4.mongodb.net/mernstack?retryWrites=true&w=majority'
+
+dotenv.config({path:'./.env'})
+
+const DB = process.env.DATABASE;
 
 app.listen(5000, () => {
   console.log('Server is listening');
