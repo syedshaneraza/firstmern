@@ -4,7 +4,10 @@ const app = express();
 
 dotenv.config({path:'./.env'})
 require('./db/index');
+app.use(express.json());
+// const User = require('./model/userSchema')
 
+app.use(require('./router/auth'));
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
@@ -17,9 +20,9 @@ const middleware = (req, res, next) => {
   next();
 }
 
-app.get('/',(req, res) => {
-  res.send('Hello from the backend');
-})
+// app.get('/',(req, res) => {
+//   res.send('Hello from the backend');
+// })
 
 app.get('/about',  middleware, (req, res) => {
   res.send('Hello from the About page');
