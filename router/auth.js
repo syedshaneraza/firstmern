@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs/dist/bcrypt");
 const express = require("express");
 const router = express.Router();
 
@@ -41,7 +43,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-
+  let token;
   try {
     const {email, password} = req.body;
     if (!email || !password) {
@@ -49,25 +51,20 @@ router.post('/login', async (req, res) => {
     }
     const userLogin = await User.findOne({email:email})
     if (userLogin) {
-      res.status(200).json({message: "User logged in successfuly"})
-    }else {
+      const isMatch = await bcrypt.compare(password, userLogin.password)
+      token = await userLogin.generateAuthToken();
+      if (isMatch) {
+        res.status(200).json({message: "User logged in successfuly"})
+      }else {
+        res.status(400).json({error: "Wrong credentials"});
+      }
+    } else {
       res.status(400).json({error: "Wrong credentials"});
     }
+    
   } catch (error) {
     console.log(error)
   }
 })
-
-// router.get('/about',  middleware, (req, res) => {
-//   res.send('Hello from the About page');
-// })
-
-// router.get('/contact', (req, res) => {
-//   res.send('Hello from the contact page');
-// })
-
-// router.get('/signup', (req, res) => {
-//   res.send('Hello from the signup page');
-// })
 
 module.exports = router;
